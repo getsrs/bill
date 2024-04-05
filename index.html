@@ -116,7 +116,7 @@
             <table>
                 <thead>
                     <tr>
-                        <th>Item</th>
+                        <th>Room Type</th>
                         <th>Quantity</th>
                         <th>Price</th>
                         <th>Total</th>
@@ -125,11 +125,11 @@
                 </thead>
                 <tbody id="itemRows">
                     <tr>
-                        <td><input type="text" name="Room Type[]"></td>
+                        <td><input type="text" name="roomtype[]"></td>
                         <td><input type="number" name="quantity[]" min="1" onchange="calculateTotalForRow(this)"></td>
                         <td><input type="number" name="price[]" min="0.01" step="0.01" onchange="calculateTotalForRow(this)"></td>
                         <td><input type="text" name="total[]" readonly></td>
-                        <td><button type="button" class="remove-item" onclick="removeItem(this)">Remove</button></td>
+                        <td><button type="button" class="remove-item" onclick="removeItem(this)">X</button></td>
                     </tr>
                 </tbody>
             </table>
@@ -150,11 +150,11 @@
         function addItem() {
             var newRow = document.createElement('tr');
             newRow.innerHTML = `
-                <td><input type="text" name="Room Type[]"></td>
+                <td><input type="text" name="roomtype[]"></td>
                 <td><input type="number" name="quantity[]" min="1" onchange="calculateTotalForRow(this)"></td>
                 <td><input type="number" name="price[]" min="0.01" step="0.01" onchange="calculateTotalForRow(this)"></td>
                 <td><input type="text" name="total[]" readonly></td>
-                <td><button type="button" class="remove-item" onclick="removeItem(this)">Remove</button></td>
+                <td><button type="button" class="remove-item" onclick="removeItem(this)">X</button></td>
             `;
             document.getElementById('itemRows').appendChild(newRow);
         }
