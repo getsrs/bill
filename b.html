@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        h1, h2 {
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .invoice-total {
+            margin-top: 20px;
+            text-align: right;
+        }
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+        input[type="submit"], button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover, button:hover {
+            background-color: #45a049;
+        }
+        .remove-item {
+            background-color: #ff4c4c;
+        }
+        .remove-item:hover {
+            background-color: #e54242;
+        }
+        .logo {
+            max-width: 200px;
+            max-height: 100px;
+            display: block;
+            margin: 0 auto;
+        }
+        .additional-text {
+            text-align: center;
+            margin-top: 20px;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Invoice</h1>
+        <div class="business-info">
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg9F_57u-SP33zjHSNAmiKvqxc8FGflcLszmWwbnECBljz9Ywp2L3FBwH5OGhkoDClQbKoChrBgdb-WxPxZLjg7y0oFoBsFC_Fb07QCwynxz2VZbpQbSpK7BXmcedaPlvlhJBjDtVU5jvi4QgML3puckgqhXe6RIiYGs7amHkXy4LOj5tVrdTmCuTyL_v0/s507/ei_1700927015411-removebg-preview.png" alt="Bhagwati Guest House Logo" class="logo">
+            <h2>Bhagwati Guest House</h2>
+            <p>Hospital Road-06, Janakpur, Nepal-45600</p>
+            <p>Email: Bhagwatiguesthouse.gmail.com</p>
+            <p>Phone: +9779844058449</p>
+        </div>
+        <form id="invoiceForm">
+            <label for="customerName">Customer Name:</label>
+            <input type="text" id="customerName" name="customerName" required>
+            <label for="MobileNumber">Mobile Number :</label>
+            <input type="text" id="MobileNumber" name="MobileNumber" required>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Item</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Total</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="itemRows">
+                    <tr>
+                        <td><input type="text" name="item[]" required></td>
+                        <td><input type="number" name="quantity[]" min="1" onchange="calculateTotalForRow(this)" required></td>
+                        <td><input type="number" name="price[]" min="0.01" step="0.01" onchange="calculateTotalForRow(this)" required></td>
+                        <td><input type="text" name="total[]" readonly></td>
+                        <td><button type="button" class="remove-item" onclick="removeItem(this)">Remove</button></td>
+                    </tr>
+                </tbody>
+            </table>
+            <button type="button" onclick="addItem()">Add Item</button>
+            <div class="invoice-total">
+                <label for="total">Total:</label>
+                <input type="text" id="total" name="total" readonly>
+            </div>
+            <input type="submit" value="Generate Invoice">
+        </form>
+        <div class="additional-text">
+            <p>This is an electronically generated bill.</p>
+            <p>Thank You! And Again Visit!!!</p>
+        </div>
+    </div>
+
+    <script>
+        function addItem() {
+            var newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td><input type="text" name="item[]" required></td>
+                <td><input type="number" name="quantity[]" min="1" onchange="calculateTotalForRow(this)" required></td>
+                <td><input type="number" name="price[]" min="0.01" step="0.01" onchange="calculateTotalForRow(this)" required></td>
+                <td><input type="text" name="total[]" readonly></td>
+                <td><button type="button" class="remove-item" onclick="removeItem(this)">Remove</button></td>
+            `;
+            document.getElementById('itemRows').appendChild(newRow);
+        }
+
+        function removeItem(button) {
+            var row = button.parentNode.parentNode;
+            row.parentNode.removeChild(row);
+            calculateTotal();
+        }
+
+        function calculateTotalForRow(input) {
+            var row = input.parentNode.parentNode;
+            var quantity = parseFloat(row.querySelector('input[name="quantity[]"]').value);
+            var price = parseFloat(row.querySelector('input[name="price[]"]').value);
+            var total = quantity * price;
+            if (!isNaN(total)) {
+                row.querySelector('input[name="total[]"]').value = total.toFixed(2);
+                calculateTotal();
+            }
+        }
+
+        function calculateTotal() {
+            var totals = document.getElementsByName('total[]');
+            var total = 0;
+            for (var i = 0; i < totals.length; i++) {
+                var value = parseFloat(totals[i].value);
+                if (!isNaN(value)) {
+                    total += value;
+                }
+            }
+            document.getElementById('total').value = total.toFixed(2);
+        }
+
+        document.getElementById('invoiceForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            calculateTotal();
+            // Here you can add logic to generate the invoice using the form data
+            // For example, you can send the data to a backend server to generate a PDF invoice
+            window.print(); // Print the invoice
+        });
+    </script>
+</body>
+</html>
