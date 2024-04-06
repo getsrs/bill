@@ -77,6 +77,7 @@
             font-size: 16px;
         }
         .time-section {
+            display: none; /* Initially hide the time section */
             position: absolute;
             top: 50px;
             right: 20px;
@@ -89,6 +90,9 @@
             button[type="button"].add-item {
                 display: none;
             }
+            .time-section {
+                display: block; /* Show the time section when printing */
+            }
         }
     </style>
 </head>
@@ -97,7 +101,7 @@
         <div class="date-section">
             Date: <span id="currentDate"></span>
         </div>
-        <div class="time-section">
+        <div class="time-section" id="timeSection">
             Time: <span id="currentTime"></span>
         </div>
         <h1>Invoice</h1>
@@ -138,7 +142,7 @@
                 <label for="total">Total (NPR):</label>
                 <input type="text" id="total" name="total" readonly>
             </div>
-            <input type="submit" value="Generate Invoice">
+            <input type="submit" value="Generate Invoice" onclick="updateTime()">
         </form>
         <div class="additional-text">
             <p>This is an electronically generated bill.</p>
@@ -188,20 +192,26 @@
             document.getElementById('total').value = total.toFixed(2);
         }
 
+        function updateTime() {
+            var currentDate = new Date();
+            var timeString = currentDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
+            document.getElementById('currentTime').innerText = timeString;
+            document.getElementById('timeSection').style.display = 'block'; // Show the time section
+        }
+
         document.getElementById('invoiceForm').addEventListener('submit', function(event) {
             event.preventDefault();
             calculateTotal();
+            updateTime(); // Update time before printing
             // Here you can add logic to generate the invoice using the form data
             // For example, you can send the data to a backend server to generate a PDF invoice
             window.print(); // Print the invoice
         });
 
-        // JavaScript to get and display current date and time
+        // JavaScript to get and display current date
         var currentDate = new Date();
         var dateString = currentDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-        var timeString = currentDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
         document.getElementById('currentDate').innerText = dateString;
-        document.getElementById('currentTime').innerText = timeString;
     </script>
 </body>
 </html>
